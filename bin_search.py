@@ -69,3 +69,49 @@ def SqRoot(n):
   def cgreater(m):
     return m*m > n
   return BinSearch(0, 2**16-1, cequal, cgreater, True)
+
+# 5. Search a sorted array A for first element larger than k
+def searchLargerThanK(A, k):
+  def cequal(m):
+    return (m == 0 and A[m] > k) or (A[m-1] <= k and A[m] > k)
+  def cgreater(m):
+    return (m != 0 and A[m-1] > k)
+  return BinSearch(0, len(A) - 1, cequal, cgreater, True)
+
+# 6. Search for a fixed point in A, i.e. find i such that A[i] = i
+def searchFixedPoint(A):
+  def cequal(m):
+    return (A[m] == m) 
+  def cgreater(m):
+    return (A[m] < m)
+  return BinSearch(0, len(A) - 1, cequal, cgreater, True)
+
+# 7. Search for element b in a sorted array A of unknown size. Though we know
+# that an exception is thrown if we access it beyond its capacity.
+def searchUnboundedArray(A, b):
+  # Narrow down "k" such that A[2^k - 1] <= b < A[2^(k+1)]
+  k = 0
+  index1 = 0
+  index2 = 2
+  try:
+    while A[index2] <= b:
+      index1 = ((1<<k)-1)
+      index2 = (1<<(k+1))
+      print "Checking k = %d, index1 = %d, index2 = %d"%(k, index1, index2)
+      k += 1
+  except:
+    pass
+  # Now do a binary search
+  def cequal(m):
+      try:
+        return (A[m] == b)
+      except:
+        return False
+  def cgreater(m):
+      try:
+        return A[m] > b
+      except:
+        return True
+  return BinSearch(index1, index2, cequal, cgreater, True)
+
+
