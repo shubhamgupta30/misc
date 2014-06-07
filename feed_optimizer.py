@@ -34,7 +34,7 @@ class FeedOptimizer(object):
       index += 1
     return index
 
-  def recompute_table(self, start_index_in_stories):
+  def recompute_table(self, stories):
     # knapsack_DP_table[(i,j)] represents the maximum score we can display
     # using first i stories and if the browser height is j.
     knapsack_DP_table = {}
@@ -47,7 +47,6 @@ class FeedOptimizer(object):
     story_use_table = {}
     # stories are ordered in decreasing order of timestamp. This is useful for
     # tie breaking
-    stories = self._stories[start_index_in_stories:][::-1]
 
     # Initialize
     for h in xrange(self._browser_height + 1):
@@ -106,6 +105,7 @@ class FeedOptimizer(object):
 
   def handle_reload(self, timestamp):
     new_start_index_in_stories = self.story_change_since_last_reload(timestamp)
+    stories = [s for s in self._stories[new_start_index_in_stories:][::-1] if s.height <= self._browser_height]
     num_stories_added = len(self._stories) - self._solution.len_stories
     num_stories_discarded = new_start_index_in_stories - self._solution.start_index_in_stories
     self._solution.len_stories = len(self._stories)
@@ -116,7 +116,7 @@ class FeedOptimizer(object):
       self.printSolution()
       return
     # No stories to show
-    if new_start_index_in_stories == len(self._stories):
+    if len(stories) == 0:
       self._solution = self.SolutionState()
       self.printSolution()
       return
@@ -126,7 +126,7 @@ class FeedOptimizer(object):
       self.calculate_solution_from_existing_table(new_start_index_in_stories)
       self.printSolution()
       return
-    self.recompute_table(new_start_index_in_stories)
+    self.recompute_table(stories)
     self.printSolution()
 
   def printSolution(self):
