@@ -86,6 +86,20 @@ def searchFixedPoint(A):
     return (A[m] < m)
   return BinSearch(0, len(A) - 1, cequal, cgreater, True)
 
+# Find unique element when every other element is repeated
+def findUnique(A):
+  def cequal(m):
+    if m == 0 and len(A) == 1: return True
+    if m == 0 and A[m] != A[m+1]: return True
+    if m == len(A) - 1 and A[m] != A[m-1]: return True
+    if A[m] != A[m-1] and A[m] != A[m+1]: return True
+    return False
+  def cgreater(m):
+    if m%2 == 0 and m != 0 and A[m] == A[m-1]: return True
+    if m%2 != 0 and m != len(A)-1 and A[m] == A[m+1]: return True
+    return False
+  return BinSearch(0, len(A) - 1, cequal, cgreater, True)
+
 # 7. Search for element b in a sorted array A of unknown size. Though we know
 # that an exception is thrown if we access it beyond its capacity.
 def searchUnboundedArray(A, b):
@@ -114,4 +128,5 @@ def searchUnboundedArray(A, b):
         return True
   return BinSearch(index1, index2, cequal, cgreater, True)
 
-
+if __name__ == "__main__":
+  print findUnique(map(int, raw_input().strip().split(" ")))

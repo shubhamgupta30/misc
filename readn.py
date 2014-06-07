@@ -1,0 +1,3 @@
+class ReadNBytes:
+  _buffer = ""
+  
